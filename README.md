@@ -2,6 +2,9 @@
 
 This is a simple Movie Rating application built with React, enabling users to rate movies they have watched.
 
+![image](https://github.com/user-attachments/assets/c1c93229-ef3f-4763-a7a1-b0987e6a30ea)
+
+
 ## Features
 
 - Display a list of movies by searching
