@@ -17,11 +17,11 @@ This is a simple Movie Rating application built with React, enabling users to ra
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/guvenyorukoglu/movieratingapp.git
+    git clone https://github.com/guvenyorukoglu/movie-rating-app.git
     ```
 2. Navigate to the project directory:
     ```sh
-    cd movieratingapp
+    cd movie-rating-app
     ```
 3. Install the dependencies:
     ```sh
