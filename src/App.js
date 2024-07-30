@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import StarRating from "./StarRating";
 import { useMovies } from "./useMovies";
+import { useLocalStorageState } from "./useLocalStorageState";
 
 //   {
 //     imdbID: "tt1375666",
@@ -57,15 +58,9 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null);
   // const [watched, setWatched] = useState([]);
-  const [watched, setWatched] = useState(() => {
-    const saved = localStorage.getItem("watched");
-    if (saved) {
-      return JSON.parse(saved);
-    }
-    return [];
-  });
 
   const { movies, isLoading, error } = useMovies(query);
+  const [watched, setWatched] = useLocalStorageState([], "watched");
 
   function handleSelectMovie(id) {
     setSelectedId((prevId) => (prevId === id ? null : id));
@@ -85,60 +80,6 @@ export default function App() {
   function handleDeleteWatched(id) {
     setWatched((prevWatched) => prevWatched.filter((w) => w.imdbID !== id));
   }
-
-  useEffect(() => {
-    localStorage.setItem("watched", JSON.stringify(watched));
-  }, [watched]);
-
-  // useEffect(() => {
-  //   //abort controller to cancel fetch request if user types too fast or changes the query before the previous fetch request is completed
-  //   const controller = new AbortController();
-
-  //   async function fetchMovies() {
-  //     try {
-  //       setIsLoading(true);
-  //       setError("");
-  //       const res = await fetch(
-  //         `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
-  //         { signal: controller.signal }
-  //       );
-
-  //       if (!res.ok) {
-  //         throw new Error("Network response was not ok");
-  //       }
-  //       const data = await res.json();
-  //       console.log(data);
-
-  //       if (data.Response === "False") {
-  //         throw new Error(data.Error);
-  //       }
-  //       setMovies(data.Search);
-  //     } catch (error) {
-  //       // Do nothing if fetch was aborted
-  //       if (controller.signal.aborted) return;
-
-  //       if (error.Name !== "AbortError") {
-  //         console.error(error.message);
-  //         setError(error.message);
-  //       }
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   }
-  //   if (query.length < 3) {
-  //     setMovies([]);
-  //     setError("");
-  //     return;
-  //   }
-
-  //   handleCloseMovieDetails();
-  //   fetchMovies();
-
-  //   //cleanup
-  //   return () => {
-  //     controller.abort();
-  //   };
-  // }, [query]);
 
   return (
     <>
@@ -285,28 +226,6 @@ function Box({ children }) {
     </div>
   );
 }
-
-// function WatchedBox() {
-//   const [watched, setWatched] = useState(tempWatchedData);
-//   const [isOpen2, setIsOpen2] = useState(true);
-
-//   return (
-//     <div className="box">
-//       <button
-//         className="btn-toggle"
-//         onClick={() => setIsOpen2((open) => !open)}
-//       >
-//         {isOpen2 ? "–" : "+"}
-//       </button>
-//       {isOpen2 && (
-//         <>
-//           <WatchedSummary watched={watched} />
-//           <WatchedMoviesList watched={watched} />
-//         </>
-//       )}
-//     </div>
-//   );
-// }
 
 function MovieList({ movies, onSelectMovie }) {
   return (
