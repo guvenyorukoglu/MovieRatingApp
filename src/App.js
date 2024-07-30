@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import StarRating from "./StarRating";
 import { useMovies } from "./useMovies";
 import { useLocalStorageState } from "./useLocalStorageState";
+import { useKey } from "./useKey";
 
 //   {
 //     imdbID: "tt1375666",
@@ -159,31 +160,14 @@ function Logo() {
 function Search({ query, setQuery }) {
   const inputEl = useRef(null);
 
-  useEffect(() => {
-    //When pressing Enter key, focus on search input and clean the input value if it's not empty
-    function callback(e) {
-      if (e.code === "Enter") {
-        if (document.activeElement === inputEl.current) return;
-        inputEl.current.focus();
-
-        //select the text in the input field
-        inputEl.current.select();
-
-        // clear the input value if it's not empty
-        // setQuery("");
-      }
-    }
-
-    document.addEventListener("keydown", callback);
-
-    // Focus on search input on page load using ref which is recommended in React
+  // Custom hook to focus on the search input field when the Enter key is pressed
+  useKey("Enter", () => {
+    if (document.activeElement === inputEl.current) return;
     inputEl.current.focus();
 
-    // Cleanup event listener on unmount in order to avoid memory leaks and bugs in the future when the component is re-rendered multiple times
-    return () => {
-      document.removeEventListener("keydown", callback);
-    };
-  }, []);
+    //select the text in the input field
+    inputEl.current.select();
+  });
 
   // useEffect(() => {
   //   // Focus on search input on page load using querySelector which is not recommended in React
@@ -337,22 +321,7 @@ function MovieDetails({
     };
   }, [title]);
 
-  useEffect(() => {
-    // Close movie details on Escape key press
-
-    function callback(e) {
-      if (e.code === "Escape") {
-        // Close movie details
-        onCloseMovieDetails();
-      }
-    }
-    document.addEventListener("keydown", callback);
-
-    // Cleanup event listener on unmount in order to avoid memory leaks and bugs in the future when the component is re-rendered multiple times
-    return () => {
-      document.removeEventListener("keydown", callback);
-    };
-  }, [onCloseMovieDetails]);
+  useKey("Escape", onCloseMovieDetails);
 
   return (
     <div className="details">
