@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import StarRating from "./StarRating";
+import { useMovies } from "./useMovies";
 
 //   {
 //     imdbID: "tt1375666",
@@ -53,9 +54,6 @@ const average = (arr) =>
 const KEY = "8c8f1fa6";
 
 export default function App() {
-  const [movies, setMovies] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null);
   // const [watched, setWatched] = useState([]);
@@ -66,6 +64,8 @@ export default function App() {
     }
     return [];
   });
+
+  const { movies, isLoading, error } = useMovies(query);
 
   function handleSelectMovie(id) {
     setSelectedId((prevId) => (prevId === id ? null : id));
@@ -90,55 +90,55 @@ export default function App() {
     localStorage.setItem("watched", JSON.stringify(watched));
   }, [watched]);
 
-  useEffect(() => {
-    //abort controller to cancel fetch request if user types too fast or changes the query before the previous fetch request is completed
-    const controller = new AbortController();
+  // useEffect(() => {
+  //   //abort controller to cancel fetch request if user types too fast or changes the query before the previous fetch request is completed
+  //   const controller = new AbortController();
 
-    async function fetchMovies() {
-      try {
-        setIsLoading(true);
-        setError("");
-        const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
-          { signal: controller.signal }
-        );
+  //   async function fetchMovies() {
+  //     try {
+  //       setIsLoading(true);
+  //       setError("");
+  //       const res = await fetch(
+  //         `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
+  //         { signal: controller.signal }
+  //       );
 
-        if (!res.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await res.json();
-        console.log(data);
+  //       if (!res.ok) {
+  //         throw new Error("Network response was not ok");
+  //       }
+  //       const data = await res.json();
+  //       console.log(data);
 
-        if (data.Response === "False") {
-          throw new Error(data.Error);
-        }
-        setMovies(data.Search);
-      } catch (error) {
-        // Do nothing if fetch was aborted
-        if (controller.signal.aborted) return;
+  //       if (data.Response === "False") {
+  //         throw new Error(data.Error);
+  //       }
+  //       setMovies(data.Search);
+  //     } catch (error) {
+  //       // Do nothing if fetch was aborted
+  //       if (controller.signal.aborted) return;
 
-        if (error.Name !== "AbortError") {
-          console.error(error.message);
-          setError(error.message);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    if (query.length < 3) {
-      setMovies([]);
-      setError("");
-      return;
-    }
+  //       if (error.Name !== "AbortError") {
+  //         console.error(error.message);
+  //         setError(error.message);
+  //       }
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   }
+  //   if (query.length < 3) {
+  //     setMovies([]);
+  //     setError("");
+  //     return;
+  //   }
 
-    handleCloseMovieDetails();
-    fetchMovies();
+  //   handleCloseMovieDetails();
+  //   fetchMovies();
 
-    //cleanup
-    return () => {
-      controller.abort();
-    };
-  }, [query]);
+  //   //cleanup
+  //   return () => {
+  //     controller.abort();
+  //   };
+  // }, [query]);
 
   return (
     <>
@@ -346,6 +346,12 @@ function MovieDetails({
   const [error, setError] = useState("");
   const [userRating, setUserRating] = useState("");
 
+  const countRef = useRef(0);
+
+  useEffect(() => {
+    if (userRating) countRef.current++;
+  }, [userRating]);
+
   const alreadyWatched = watched.find((w) => w.imdbID === selectedId) || null;
 
   const {
@@ -365,15 +371,16 @@ function MovieDetails({
     if (alreadyWatched) {
       alreadyWatched.userRating = userRating;
     } else {
-      const newMovie = {
+      const newWatchedMovie = {
         imdbID: selectedId,
         Title: title,
         Poster: poster,
         imdbRating: Number(imdbRating),
         runtime: Number(runtime.split(" ").at(0)),
         userRating,
+        countRatingDecisions: countRef.current,
       };
-      onAddWatched(newMovie);
+      onAddWatched(newWatchedMovie);
     }
     onCloseMovieDetails();
   }
@@ -574,3 +581,6 @@ function WatchedMovie({ movie, onDeleteWatched }) {
     </li>
   );
 }
+
+// TODO: Change background color of the selected movie in the list when clicked on it
+// TODO: After Search, when pressed down arrow key, focus on the first movie in the list, and when pressed down arrow key again, focus on the second movie in the list, and so on. If up arrow key is pressed when the first movie is focused, focus on the search input field
