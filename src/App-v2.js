@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import StarRating from "./StarRating";
 
+// const tempMovieData = [
 //   {
 //     imdbID: "tt1375666",
 //     Title: "Inception",
@@ -54,18 +55,11 @@ const KEY = "8c8f1fa6";
 
 export default function App() {
   const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null);
-  // const [watched, setWatched] = useState([]);
-  const [watched, setWatched] = useState(() => {
-    const saved = localStorage.getItem("watched");
-    if (saved) {
-      return JSON.parse(saved);
-    }
-    return [];
-  });
 
   function handleSelectMovie(id) {
     setSelectedId((prevId) => (prevId === id ? null : id));
@@ -77,18 +71,11 @@ export default function App() {
 
   function handleAddWatched(movie) {
     setWatched((prevWatched) => [...prevWatched, movie]);
-
-    //Storage for watched movies in local storage to persist data on page reload or refresh
-    // localStorage.setItem("watched", JSON.stringify([...watched, movie]));
   }
 
   function handleDeleteWatched(id) {
     setWatched((prevWatched) => prevWatched.filter((w) => w.imdbID !== id));
   }
-
-  useEffect(() => {
-    localStorage.setItem("watched", JSON.stringify(watched));
-  }, [watched]);
 
   useEffect(() => {
     //abort controller to cancel fetch request if user types too fast or changes the query before the previous fetch request is completed
