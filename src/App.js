@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import StarRating from "./StarRating";
 
 //   {
@@ -216,6 +216,40 @@ function Logo() {
 }
 
 function Search({ query, setQuery }) {
+  const inputEl = useRef(null);
+
+  useEffect(() => {
+    //When pressing Enter key, focus on search input and clean the input value if it's not empty
+    function callback(e) {
+      if (e.code === "Enter") {
+        if (document.activeElement === inputEl.current) return;
+        inputEl.current.focus();
+
+        //select the text in the input field
+        inputEl.current.select();
+
+        // clear the input value if it's not empty
+        // setQuery("");
+      }
+    }
+
+    document.addEventListener("keydown", callback);
+
+    // Focus on search input on page load using ref which is recommended in React
+    inputEl.current.focus();
+
+    // Cleanup event listener on unmount in order to avoid memory leaks and bugs in the future when the component is re-rendered multiple times
+    return () => {
+      document.removeEventListener("keydown", callback);
+    };
+  }, []);
+
+  // useEffect(() => {
+  //   // Focus on search input on page load using querySelector which is not recommended in React
+  //   const element = document.querySelector(".search");
+  //   element.focus();
+  // }, []);
+
   return (
     <input
       className="search"
@@ -223,6 +257,7 @@ function Search({ query, setQuery }) {
       placeholder="Search movies..."
       value={query}
       onChange={(e) => setQuery(e.target.value)}
+      ref={inputEl}
     />
   );
 }
