@@ -2,6 +2,9 @@
 
 This is a simple Movie Rating application built with React, enabling users to rate movies they have watched.
 
+<img src="https://github.com/user-attachments/assets/f3449cf0-c40e-4ee4-b971-e641c437c65f" width="500" />
+<img src="https://github.com/user-attachments/assets/67771b90-0ad8-4a98-afaf-327738b8578d" width="500" />
+
 ## Features
 
 - Display a list of movies by searching
@@ -14,11 +17,11 @@ This is a simple Movie Rating application built with React, enabling users to ra
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/guvenyorukoglu/movieratingapp.git
+    git clone https://github.com/guvenyorukoglu/movie-rating-app.git
     ```
 2. Navigate to the project directory:
     ```sh
-    cd movieratingapp
+    cd movie-rating-app
     ```
 3. Install the dependencies:
     ```sh
