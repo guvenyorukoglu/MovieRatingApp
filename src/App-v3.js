@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import StarRating from "./StarRating";
 import { useMovies } from "./useMovies";
 import { useLocalStorageState } from "./useLocalStorageState";
 import { useKey } from "./useKey";
-import StarRating from "./StarRating";
 
 //   {
 //     imdbID: "tt1375666",
@@ -90,14 +90,17 @@ export default function App() {
       </NavBar>
       <Main>
         <Box>
+          {/* {isLoading ? (
+            <Loader />
+          ) : error ? (
+            <ErrorMessage message={error} />
+          ) : (
+            <MovieList movies={movies} />
+          )} */}
           {isLoading && <Loader />}
           {error && <ErrorMessage message={error} />}
           {!isLoading && !error && (
-            <MovieList
-              movies={movies}
-              onSelectMovie={handleSelectMovie}
-              selectedId={selectedId}
-            />
+            <MovieList movies={movies} onSelectMovie={handleSelectMovie} />
           )}
         </Box>
         <Box>
@@ -208,26 +211,18 @@ function Box({ children }) {
   );
 }
 
-function MovieList({ movies, onSelectMovie, selectedId }) {
+function MovieList({ movies, onSelectMovie }) {
   return (
     <ul className="list list-movies">
       {movies?.map((movie) => (
-        <Movie
-          key={movie.imdbID}
-          movie={movie}
-          onSelectMovie={onSelectMovie}
-          selectedId={selectedId}
-        />
+        <Movie key={movie.imdbID} movie={movie} onSelectMovie={onSelectMovie} />
       ))}
     </ul>
   );
 }
-function Movie({ movie, onSelectMovie, selectedId }) {
+function Movie({ movie, onSelectMovie }) {
   return (
-    <li
-      onClick={() => onSelectMovie(movie.imdbID)}
-      className={movie.imdbID === selectedId ? "selected" : ""}
-    >
+    <li onClick={() => onSelectMovie(movie.imdbID)}>
       <img
         src={movie.Poster === "N/A" ? "/no-photo.jpg" : movie.Poster}
         alt={`${movie.Title} poster`}
@@ -236,13 +231,7 @@ function Movie({ movie, onSelectMovie, selectedId }) {
       <div>
         <p>
           <span>🗓</span>
-          <span>
-            <p>
-              {movie.Year}&nbsp; &bull;&nbsp;
-              {movie.Type.charAt(0).toUpperCase() +
-                movie.Type.slice(1).toLowerCase()}
-            </p>
-          </span>
+          <span>{movie.Year}</span>
         </p>
       </div>
     </li>

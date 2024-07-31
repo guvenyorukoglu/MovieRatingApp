@@ -171,6 +171,10 @@ body {
   background-color: var(--color-background-100);
 }
 
+.list.list-movies li.selected {
+  background-color: var(--color-primary-light);
+}
+
 .list img {
   width: 100%;
   grid-row: 1 / -1;
