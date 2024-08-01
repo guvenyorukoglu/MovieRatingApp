@@ -186,7 +186,7 @@ function Movie({ movie, onSelectMovie, selectedId }) {
           <span>🗓</span>
           <span>
             <p>
-              {movie.Year}&nbsp; &bull;&nbsp;
+              {movie.Year}&nbsp; &bull; &nbsp;
               {movie.Type.charAt(0).toUpperCase() +
                 movie.Type.slice(1).toLowerCase()}
             </p>
