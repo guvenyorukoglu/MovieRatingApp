@@ -166,12 +166,6 @@ function Search({ query, setQuery }) {
     inputEl.current.select();
   });
 
-  // useEffect(() => {
-  //   // Focus on search input on page load using querySelector which is not recommended in React
-  //   const element = document.querySelector(".search");
-  //   element.focus();
-  // }, []);
-
   return (
     <input
       className="search"
@@ -481,5 +475,4 @@ function WatchedMovie({ movie, onDeleteWatched }) {
   );
 }
 
-// TODO: Change background color of the selected movie in the list when clicked on it
 // TODO: After Search, when pressed down arrow key, focus on the first movie in the list, and when pressed down arrow key again, focus on the second movie in the list, and so on. If up arrow key is pressed when the first movie is focused, focus on the search input field
